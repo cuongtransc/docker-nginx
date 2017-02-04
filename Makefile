@@ -1,7 +1,7 @@
 PRIVATE_REGISTRY_URL=ro.lan:5000
 
 DOCKER_IMAGE=tranhuucuong91/nginx
-VERSION=1.7
+VERSION=1.10.3
 
 all: build
 
@@ -16,3 +16,4 @@ build-for-private-registry:
 
 push-for-private-registry:
 	docker push ${PRIVATE_REGISTRY_URL}/${DOCKER_IMAGE}:${VERSION}
+

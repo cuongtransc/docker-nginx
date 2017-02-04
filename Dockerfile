@@ -1,29 +1,38 @@
-# Author: Tran Huu Cuong
-# Date: 2014-12-12
+# Author: Cuong Tran
+# Date: 2017-02-04
 #
 # Build:
-#       docker build -t cocd/nginx:1.7 .
+#       docker build -t tranhuucuong91/nginx:1.10.3 .
 #
 # Run:
-#       docker run -d -p 80:80 -p 443:443 --name nginx cocd/nginx:1.7
+#       docker run -d -p 80:80 -p 443:443 --name nginx tranhuucuong91/nginx:1.10.3
 #
 
-# FROM debian:wheezy
-# FROM debian:jessie
+FROM ubuntu:16.04
+MAINTAINER Cuong Tran "tranhuucuong91@gmail.com"
 
-FROM ubuntu:14.04
-MAINTAINER Tran Huu Cuong "tranhuucuong91@gmail.com"
-
-# using apt-cacher-ng proxy for caching deb package
+# Using apt-cacher-ng proxy for caching deb package
 RUN echo 'Acquire::http::Proxy "http://172.17.0.1:3142/";' >> /etc/apt/apt.conf.d/01proxy
 
-COPY build-nginx /tmp/build-nginx
-RUN DEBIAN_FRONTEND=noninteractive bash /tmp/build-nginx/build-nginx-ubuntu-14.04.sh
+ENV REFRESHED_AT 2017-02-17
 
-# make utf-8 enabled by default
+RUN apt-get update -qq
+
+COPY build-nginx/build-nginx-ubuntu-16.04_cached.sh /build-nginx.sh
+RUN DEBIAN_FRONTEND=noninteractive bash /build-nginx.sh \
+    && rm /build-nginx.sh
+
+RUN apt-get install -y letsencrypt
+
+# Make utf-8 enabled by default
 ENV LANG en_US.utf8
 
-# forward request and error logs to docker log collector
+COPY nginx-config /etc/nginx
+
+# Remove deb proxy
+RUN rm /etc/apt/apt.conf.d/01proxy
+
+# Forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
@@ -35,10 +44,9 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 WORKDIR /etc/nginx
 
 # Create mount point
-VOLUME ["/etc/nginx/"]
+VOLUME ["/etc/nginx", "/etc/letsencrypt"]
 
 # Expose port
 EXPOSE 80 443
 
 CMD ["nginx", "-g", "daemon off;"]
-
