@@ -2,14 +2,14 @@
 # Date: 2017-02-04
 #
 # Build:
-#       docker build -t tranhuucuong91/nginx:1.10.3 .
+#       docker build -t cuongtransc/nginx:1.10.3 .
 #
 # Run:
-#       docker run -d -p 80:80 -p 443:443 --name nginx tranhuucuong91/nginx:1.10.3
+#       docker run -d -p 80:80 -p 443:443 --name nginx cuongtransc/nginx:1.10.3
 #
 
 FROM ubuntu:16.04
-MAINTAINER Cuong Tran "tranhuucuong91@gmail.com"
+MAINTAINER Cuong Tran "cuongtransc@gmail.com"
 
 # Using apt-cacher-ng proxy for caching deb package
 RUN echo 'Acquire::http::Proxy "http://172.17.0.1:3142/";' >> /etc/apt/apt.conf.d/01proxy
