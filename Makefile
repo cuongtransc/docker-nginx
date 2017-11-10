@@ -1,6 +1,6 @@
 PRIVATE_REGISTRY_URL=ro.lan:5000
 
-DOCKER_IMAGE=tranhuucuong91/nginx
+DOCKER_IMAGE=cuongtransc/nginx
 VERSION=1.10.3
 
 all: build
